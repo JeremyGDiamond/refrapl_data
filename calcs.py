@@ -352,7 +352,7 @@ def pivot_fold_median():
         aggfunc='median'  # Average
     )
 
-    print("\nRAPL_diff\n")
+    print("\nMedien_RAPL_diff\n")
 
     pivot = pivot.loc[tools]
 
@@ -362,7 +362,7 @@ def pivot_fold_median():
     # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nRAPL_diff_rel\n")
+    print("\nMedien_RAPL_diff_rel\n")
 
     pivot_adjusted.to_csv("./csv/RAPL_rel_median_pivot.csv")
     print(pivot_adjusted)
@@ -374,7 +374,7 @@ def pivot_fold_median():
         aggfunc='median'  # Average
     )
 
-    print("\nDurations\n")
+    print("\nMedien_Durations\n")
 
     pivot = pivot.loc[tools]
 
@@ -384,7 +384,7 @@ def pivot_fold_median():
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nDurations_rel\n")
+    print("\nMedien_Durations_rel\n")
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/dur_median_rel_pivot.csv")
@@ -398,7 +398,7 @@ def pivot_fold_median():
         aggfunc='median'  # Average
     )
 
-    print("\nSmart_Plug_Energy\n")
+    print("\nMedien_Smart_Plug_Energy\n")
 
     pivot = pivot.loc[tools]
 
@@ -408,7 +408,7 @@ def pivot_fold_median():
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nSmart_Plug_Energy_rel\n")
+    print("\nMedien_Smart_Plug_Energy_rel\n")
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/splug_median_rel_pivot.csv")
@@ -422,7 +422,7 @@ def pivot_fold_mean():
         aggfunc='mean'  # Average
     )
 
-    print("\nRAPL_diff\n")
+    print("\nMean_RAPL_diff\n")
 
     pivot = pivot.loc[tools]
 
@@ -432,7 +432,7 @@ def pivot_fold_mean():
     # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nRAPL_diff_rel\n")
+    print("\nMean_RAPL_diff_rel\n")
 
     pivot_adjusted.to_csv("./csv/RAPL_rel_mean_pivot.csv")
     print(pivot_adjusted)
@@ -444,7 +444,7 @@ def pivot_fold_mean():
         aggfunc='mean'  # Average
     )
 
-    print("\nDurations\n")
+    print("\nMean_Durations\n")
 
     pivot = pivot.loc[tools]
 
@@ -454,7 +454,7 @@ def pivot_fold_mean():
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nDurations_rel\n")
+    print("\nMean_Durations_rel\n")
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/dur_mean_rel_pivot.csv")
@@ -468,7 +468,7 @@ def pivot_fold_mean():
         aggfunc='mean'  # Average
     )
 
-    print("\nSmart_Plug_Energy\n")
+    print("\nMean_Smart_Plug_Energy\n")
 
     pivot = pivot.loc[tools]
 
@@ -478,7 +478,7 @@ def pivot_fold_mean():
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
-    print("\nSmart_Plug_Energy_rel\n")
+    print("\nMean_Smart_Plug_Energy_rel\n")
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/splug_mean_rel_pivot.csv")
@@ -672,3 +672,125 @@ df_filtered = df_cleaned[
 ].copy()
 
 # maxtix_of_boxs(df_filtered, 'diff_aenergy_total', 'Smart Plug Energy Consumption (Wh)', "./plots/Splug_Energy_Consumption_box_matrix.png")
+
+# ref kern box plots with dist points
+
+df_filtered = df_cleaned[
+    (df_cleaned['tool'] == 'Ref_Kern') & 
+    (df_cleaned['benchmark'] != 'mi') 
+    ]
+
+benchmarks = benchmarks1
+
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
+axes = axes.flatten()
+
+# Pick 7 distinct colors
+palette = sns.color_palette("tab10")[:7]
+
+for i, (benchmark, color) in enumerate(zip(benchmarks, palette)):
+    ax = axes[i]
+    data = df_filtered[df_filtered['benchmark'] == benchmark]
+    
+    sns.boxplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        fliersize=0,
+        boxprops=dict(facecolor='none', edgecolor=color),
+        whiskerprops=dict(color=color),
+        capprops=dict(color=color),
+        medianprops=dict(color=color)
+    )
+    
+    sns.stripplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        jitter=True,
+        alpha=0.7
+    )
+    
+    ax.set_title(benchmark)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_xticks([])  # remove x ticks
+
+# Hide the 8th subplot
+axes[-1].axis('off')
+
+# Add one common y-axis label
+fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+
+# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+
+plt.tight_layout(rect=[0.05, 0, 1, 1])
+
+plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=300)
+# plt.show()
+
+# ref user box plots with dist points
+
+df_filtered = df_cleaned[
+    (df_cleaned['tool'] == 'Ref_User') & 
+    (df_cleaned['benchmark'] != 'mi') 
+    ]
+
+benchmarks = benchmarks1
+
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
+axes = axes.flatten()
+
+# Pick 7 distinct colors
+palette = sns.color_palette("tab10")[:7]
+
+for i, (benchmark, color) in enumerate(zip(benchmarks, palette)):
+    ax = axes[i]
+    data = df_filtered[df_filtered['benchmark'] == benchmark]
+    
+    sns.boxplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        fliersize=0,
+        boxprops=dict(facecolor='none', edgecolor=color),
+        whiskerprops=dict(color=color),
+        capprops=dict(color=color),
+        medianprops=dict(color=color)
+    )
+    
+    sns.stripplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        jitter=True,
+        alpha=0.7
+    )
+    
+    ax.set_title(benchmark)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_xticks([])  # remove x ticks
+
+# Hide the 8th subplot
+axes[-1].axis('off')
+
+# Add one common y-axis label
+fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+
+# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+
+plt.tight_layout(rect=[0.05, 0, 1, 1])
+
+plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=300)
+# plt.show()
