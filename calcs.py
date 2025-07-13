@@ -680,8 +680,6 @@ df_filtered = df_cleaned[
     (df_cleaned['benchmark'] != 'mi') 
     ]
 
-benchmarks = benchmarks1
-
 fig, axes = plt.subplots(2, 4, figsize=(16, 8))
 fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
 axes = axes.flatten()
@@ -689,7 +687,7 @@ axes = axes.flatten()
 # Pick 7 distinct colors
 palette = sns.color_palette("tab10")[:7]
 
-for i, (benchmark, color) in enumerate(zip(benchmarks, palette)):
+for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
     ax = axes[i]
     data = df_filtered[df_filtered['benchmark'] == benchmark]
     
@@ -741,8 +739,6 @@ df_filtered = df_cleaned[
     (df_cleaned['benchmark'] != 'mi') 
     ]
 
-benchmarks = benchmarks1
-
 fig, axes = plt.subplots(2, 4, figsize=(16, 8))
 fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
 axes = axes.flatten()
@@ -750,7 +746,7 @@ axes = axes.flatten()
 # Pick 7 distinct colors
 palette = sns.color_palette("tab10")[:7]
 
-for i, (benchmark, color) in enumerate(zip(benchmarks, palette)):
+for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
     ax = axes[i]
     data = df_filtered[df_filtered['benchmark'] == benchmark]
     
