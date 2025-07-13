@@ -343,13 +343,13 @@ df_cleaned['end_time'] = pd.to_datetime(df_cleaned['end_timestamp'], format="%Y%
 df_cleaned['duration'] = df_cleaned['end_time'] - df_cleaned['start_time']
 df_cleaned['duration_seconds'] = df_cleaned['duration'].dt.total_seconds()
 
-def pivot_fold():
+def pivot_fold_median():
 
     pivot = df_cleaned.pivot_table(
         index='tool',
         columns='benchmark',
         values='RAPL_diff',
-        aggfunc='min'  # Average
+        aggfunc='median'  # Average
     )
 
     print("\nRAPL_diff\n")
@@ -357,14 +357,84 @@ def pivot_fold():
     pivot = pivot.loc[tools]
 
     print(pivot)  
-    pivot.to_csv("./csv/RAPL_diff_pivot.csv")
+    pivot.to_csv("./csv/RAPL_diff_median_pivot.csv")
 
     # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
 
     print("\nRAPL_diff_rel\n")
 
-    pivot_adjusted.to_csv("./csv/RAPL_rel_pivot.csv")
+    pivot_adjusted.to_csv("./csv/RAPL_rel_median_pivot.csv")
+    print(pivot_adjusted)
+
+    pivot = df_cleaned.pivot_table(
+        index='tool',
+        columns='benchmark',
+        values='duration_seconds',
+        aggfunc='median'  # Average
+    )
+
+    print("\nDurations\n")
+
+    pivot = pivot.loc[tools]
+
+    print(pivot)
+    pivot.to_csv("./csv/dur_median_pivot.csv")
+
+     # Subtract the 'No_Tools' row from every other row in each column
+    pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
+
+    print("\nDurations_rel\n")
+
+    print(pivot_adjusted)
+    pivot_adjusted.to_csv("./csv/dur_median_rel_pivot.csv")
+
+
+    # smart plug energy total 
+    pivot = df_cleaned.pivot_table(
+        index='tool',
+        columns='benchmark',
+        values='diff_aenergy_total',
+        aggfunc='median'  # Average
+    )
+
+    print("\nSmart_Plug_Energy\n")
+
+    pivot = pivot.loc[tools]
+
+    print(pivot)
+    pivot.to_csv("./csv/splug_median_pivot.csv")
+
+     # Subtract the 'No_Tools' row from every other row in each column
+    pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
+
+    print("\nSmart_Plug_Energy_rel\n")
+
+    print(pivot_adjusted)
+    pivot_adjusted.to_csv("./csv/splug_median_rel_pivot.csv")
+
+def pivot_fold_mean():
+
+    pivot = df_cleaned.pivot_table(
+        index='tool',
+        columns='benchmark',
+        values='RAPL_diff',
+        aggfunc='mean'  # Average
+    )
+
+    print("\nRAPL_diff\n")
+
+    pivot = pivot.loc[tools]
+
+    print(pivot)  
+    pivot.to_csv("./csv/RAPL_diff_mean_pivot.csv")
+
+    # Subtract the 'No_Tools' row from every other row in each column
+    pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
+
+    print("\nRAPL_diff_rel\n")
+
+    pivot_adjusted.to_csv("./csv/RAPL_rel_mean_pivot.csv")
     print(pivot_adjusted)
 
     pivot = df_cleaned.pivot_table(
@@ -379,7 +449,7 @@ def pivot_fold():
     pivot = pivot.loc[tools]
 
     print(pivot)
-    pivot.to_csv("./csv/dur_pivot.csv")
+    pivot.to_csv("./csv/dur_mean_pivot.csv")
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -387,7 +457,7 @@ def pivot_fold():
     print("\nDurations_rel\n")
 
     print(pivot_adjusted)
-    pivot_adjusted.to_csv("./csv/dur_rel_pivot.csv")
+    pivot_adjusted.to_csv("./csv/dur_mean_rel_pivot.csv")
 
 
     # smart plug energy total 
@@ -403,7 +473,7 @@ def pivot_fold():
     pivot = pivot.loc[tools]
 
     print(pivot)
-    pivot.to_csv("./csv/splug_pivot.csv")
+    pivot.to_csv("./csv/splug_mean_pivot.csv")
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -411,9 +481,11 @@ def pivot_fold():
     print("\nSmart_Plug_Energy_rel\n")
 
     print(pivot_adjusted)
-    pivot_adjusted.to_csv("./csv/splug_rel_pivot.csv")
+    pivot_adjusted.to_csv("./csv/splug_mean_rel_pivot.csv")
 
-pivot_fold()
+pivot_fold_median()
+
+pivot_fold_mean()
 
 #sw stuff
 
