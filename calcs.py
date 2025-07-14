@@ -114,17 +114,17 @@ def read_microbench(directory):
                     row["filename"] = filename
 
                     # add data to rows 
-                    row[data[1][0]] = data[1][1]
-                    row[data[2][0]] = data[2][1]
-                    row[data[3][0]] = data[3][1]
-                    row[data[4][0]] = data[4][1]
-                    row[data[5][0]] = data[5][1]
-                    row[data[6][0]] = data[6][1]
-                    row[data[7][0]] = data[7][1]
-                    row[data[8][0]] = data[8][1]
-                    row[data[9][0]] = data[9][1]
-                    row[data[10][0]] = data[10][1]
-                    row[data[11][0]] = data[11][1]
+                    row[data[1][0].strip()] = int(data[1][1].strip())
+                    row[data[2][0].strip()] = int(data[2][1].strip())
+                    row[data[3][0].strip()] = int(data[3][1].strip())
+                    row[data[4][0].strip()] = int(data[4][1].strip())
+                    row[data[5][0].strip()] = int(data[5][1].strip())
+                    row[data[6][0].strip()] = int(data[6][1].strip())
+                    row[data[7][0].strip()] = int(data[7][1].strip())
+                    row[data[8][0].strip()] = int(data[8][1].strip())
+                    row[data[9][0].strip()] = int(data[9][1].strip())
+                    row[data[10][0].strip()] = int(data[10][1].strip())
+                    row[data[11][0].strip()] = int(data[11][1].strip())
                     rows.append(row)
 
             elif (match == None):
@@ -152,24 +152,35 @@ def read_cstate(directory):
                 if tool in tools and benchmark in benchmarks:
                     filepath = os.path.join(directory, filename)
                     row = {}
-                    count = 0
+                    row[f"C0_sec"] = 0.0
+                    row[f"C1_sec"] = 0.0
+                    row[f"C3_sec"] = 0.0
+                    row[f"C6_sec"] = 0.0
+                    row[f"C8_sec"] = 0.0
+                    row[f"C9_sec"] = 0.0
+                    
                     with open(filepath, "r") as f:
                         for line in f:
                             line = line.strip()
                             if not line:
                                 continue  # skip empty lines
 
-                            if line.startswith("Core"):
-                                continue # skip headers
+                            elif line.startswith("Core"):
+                               continue
+                                
 
-                            if line.startswith("-"):
+                            elif line.startswith("-"):
+                                continue
+
+                            else:
                                 sline = line.split("\t")
-                                row[f"C1% {count:04d}"] = float(sline[2])
-                                row[f"C3% {count:04d}"] = float(sline[3])
-                                row[f"C6% {count:04d}"] = float(sline[4])
-                                row[f"C8% {count:04d}"] = float(sline[5])
-                                row[f"C9% {count:04d}"] = float(sline[6])
-                                count = count +1
+                                row[f"C1_sec"] = (float(sline[2])/100) + row[f"C1_sec"]
+                                row[f"C3_sec"] = (float(sline[3])/100) + row[f"C3_sec"]
+                                row[f"C6_sec"] = (float(sline[4])/100) + row[f"C6_sec"]
+                                row[f"C8_sec"] = (float(sline[5])/100) + row[f"C8_sec"]
+                                row[f"C9_sec"] = (float(sline[6])/100) + row[f"C9_sec"]
+                                row[f"C0_sec"] = row[f"C0_sec"] + (1 - (float(sline[2])/100) - (float(sline[3])/100)- 
+                                                                   (float(sline[4])/100) - (float(sline[5])/100) - (float(sline[6])/100)) 
                         
                     
                     row["run_number"] = run_number
@@ -275,13 +286,17 @@ print("Columns:", df_benches.columns.tolist())
 
 # print(pivot)
 
-# runtable = df1[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
+runtable = df1[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
 
-# runtable.to_csv("runtable_bench.csv", index=False)
+runtable.to_csv("./csv/runtable_bench.csv", index=False)
+with open('./tex/runtable_bench.tex', 'w') as f:
+    f.write(runtable.to_latex(index=True, escape=False))
 
-# runtable = df2[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
+runtable = df2[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
 
-# runtable.to_csv("runtable_sleep_micro.csv", index=False)
+runtable.to_csv("./csv/runtable_sleep_micro.csv", index=False)
+with open('./tex/runtable_sleep_micro.tex', 'w') as f:
+    f.write(runtable.to_latex(index=True, escape=False))
 
 ## import micro-bench data
 mbdf = read_microbench(mbdirectory)
@@ -358,6 +373,8 @@ def pivot_fold_median():
 
     print(pivot)  
     pivot.to_csv("./csv/RAPL_diff_median_pivot.csv")
+    with open('./tex/RAPL_diff_median_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
 
     # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -365,6 +382,8 @@ def pivot_fold_median():
     print("\nMedien_RAPL_diff_rel\n")
 
     pivot_adjusted.to_csv("./csv/RAPL_rel_median_pivot.csv")
+    with open('./tex/RAPL_rel_median_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
     print(pivot_adjusted)
 
     pivot = df_cleaned.pivot_table(
@@ -380,6 +399,9 @@ def pivot_fold_median():
 
     print(pivot)
     pivot.to_csv("./csv/dur_median_pivot.csv")
+    with open('./tex/dur_median_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
+    
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -388,7 +410,8 @@ def pivot_fold_median():
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/dur_median_rel_pivot.csv")
-
+    with open('./tex/dur_median_rel_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
 
     # smart plug energy total 
     pivot = df_cleaned.pivot_table(
@@ -404,6 +427,8 @@ def pivot_fold_median():
 
     print(pivot)
     pivot.to_csv("./csv/splug_median_pivot.csv")
+    with open('./tex/splug_median_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -412,6 +437,8 @@ def pivot_fold_median():
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/splug_median_rel_pivot.csv")
+    with open('./tex/splug_median_rel_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
 
 def pivot_fold_mean():
 
@@ -428,6 +455,8 @@ def pivot_fold_mean():
 
     print(pivot)  
     pivot.to_csv("./csv/RAPL_diff_mean_pivot.csv")
+    with open('./tex/RAPL_diff_mean_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
 
     # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -435,6 +464,8 @@ def pivot_fold_mean():
     print("\nMean_RAPL_diff_rel\n")
 
     pivot_adjusted.to_csv("./csv/RAPL_rel_mean_pivot.csv")
+    with open('./tex/RAPL_rel_mean_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
     print(pivot_adjusted)
 
     pivot = df_cleaned.pivot_table(
@@ -450,6 +481,8 @@ def pivot_fold_mean():
 
     print(pivot)
     pivot.to_csv("./csv/dur_mean_pivot.csv")
+    with open('./tex/dur_mean_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -458,6 +491,8 @@ def pivot_fold_mean():
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/dur_mean_rel_pivot.csv")
+    with open('./tex/dur_mean_rel_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
 
 
     # smart plug energy total 
@@ -474,6 +509,8 @@ def pivot_fold_mean():
 
     print(pivot)
     pivot.to_csv("./csv/splug_mean_pivot.csv")
+    with open('./tex/splug_mean_pivot.tex', 'w') as f:
+        f.write(pivot.to_latex(index=True, escape=False))
 
      # Subtract the 'No_Tools' row from every other row in each column
     pivot_adjusted = pivot.subtract(pivot.loc["No_Tools"], axis=1)
@@ -482,6 +519,8 @@ def pivot_fold_mean():
 
     print(pivot_adjusted)
     pivot_adjusted.to_csv("./csv/splug_mean_rel_pivot.csv")
+    with open('./tex/splug_mean_rel_pivot.tex', 'w') as f:
+        f.write(pivot_adjusted.to_latex(index=True, escape=False))
 
 pivot_fold_median()
 
@@ -493,16 +532,23 @@ shapiro_results = sw_Test(df_cleaned, 'duration_seconds')
 print("\nsw of duration seconds\n")
 # pprint(shapiro_results)
 shapiro_results.to_csv("./csv/dur_sw.csv")
+with open('./tex/dur_sw.tex', 'w') as f:
+    f.write(shapiro_results.to_latex(index=True, escape=False))
 
 shapiro_results = sw_Test(df_cleaned, 'RAPL_diff')
 print("\nsw of RAPL_diff\n")
 # pprint(shapiro_results)
 shapiro_results.to_csv("./csv/rapl_diff_sw.csv")
+with open('./tex/rapl_diff_sw.tex', 'w') as f:
+    f.write(shapiro_results.to_latex(index=True, escape=False))
 
 shapiro_results = sw_Test(df_cleaned, 'diff_aenergy_total')
 print("\nsw of diff_aenergy_total\n")
 # pprint(shapiro_results)
 shapiro_results.to_csv("./csv/diff_aenergy_total_sw.csv")
+with open('./tex/diff_aenergy_total_sw.tex', 'w') as f:
+    f.write(shapiro_results.to_latex(index=True, escape=False))
+
 
 # kw stuff
 
@@ -531,6 +577,9 @@ def kw_fold():
 
     print("\nKW for benchmarks of RAPL_diff\n")
     print(kruskal_df)
+    with open('./tex/kw_bench_rapl_diff.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
     results = []
 
@@ -554,6 +603,9 @@ def kw_fold():
     kruskal_df = pd.DataFrame(results)
     print("\nKW for tools of RAPL_diff\n")
     print(kruskal_df)
+    with open('./tex/kw_tools_rapl_diff.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
     results = []
 
@@ -578,6 +630,9 @@ def kw_fold():
 
     print("\nKW for benchmarks of duration\n")
     print(kruskal_df)
+    with open('./tex/kw_bench_duration.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
     results = []
 
@@ -601,6 +656,9 @@ def kw_fold():
     kruskal_df = pd.DataFrame(results)
     print("\nKW for tools of duration\n")
     print(kruskal_df)
+    with open('./tex/kw_tool_duration.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
     results = []
 
@@ -625,6 +683,9 @@ def kw_fold():
 
     print("\nKW for benchmarks of Smart Plug Energy\n")
     print(kruskal_df)
+    with open('./tex/kw_bench_splug_diff.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
     results = []
 
@@ -648,6 +709,9 @@ def kw_fold():
     kruskal_df = pd.DataFrame(results)
     print("\nKW for tools of Smart Plug Energy\n")
     print(kruskal_df)
+    with open('./tex/kw_tool_splug_diff.tex', 'w') as f:
+        f.write(kruskal_df.to_latex(index=True, escape=False))
+
 
 kw_fold()
 
@@ -675,118 +739,216 @@ df_filtered = df_cleaned[
 
 # ref kern box plots with dist points
 
-df_filtered = df_cleaned[
-    (df_cleaned['tool'] == 'Ref_Kern') & 
-    (df_cleaned['benchmark'] != 'mi') 
-    ]
+# df_filtered = df_cleaned[
+#     (df_cleaned['tool'] == 'Ref_Kern') & 
+#     (df_cleaned['benchmark'] != 'mi') 
+#     ]
 
-fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
-axes = axes.flatten()
+# fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+# fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
+# axes = axes.flatten()
 
-# Pick 7 distinct colors
-palette = sns.color_palette("tab10")[:7]
+# # Pick 7 distinct colors
+# palette = sns.color_palette("tab10")[:7]
 
-for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
-    ax = axes[i]
-    data = df_filtered[df_filtered['benchmark'] == benchmark]
+# for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
+#     ax = axes[i]
+#     data = df_filtered[df_filtered['benchmark'] == benchmark]
     
-    sns.boxplot(
-        x=[''] * len(data),
-        y='RAPL_diff',
-        data=data,
-        ax=ax,
-        color=color,
-        fliersize=0,
-        boxprops=dict(facecolor='none', edgecolor=color),
-        whiskerprops=dict(color=color),
-        capprops=dict(color=color),
-        medianprops=dict(color=color)
-    )
+#     sns.boxplot(
+#         x=[''] * len(data),
+#         y='RAPL_diff',
+#         data=data,
+#         ax=ax,
+#         color=color,
+#         fliersize=0,
+#         boxprops=dict(facecolor='none', edgecolor=color),
+#         whiskerprops=dict(color=color),
+#         capprops=dict(color=color),
+#         medianprops=dict(color=color)
+#     )
     
-    sns.stripplot(
-        x=[''] * len(data),
-        y='RAPL_diff',
-        data=data,
-        ax=ax,
-        color=color,
-        jitter=True,
-        alpha=0.7
-    )
+#     sns.stripplot(
+#         x=[''] * len(data),
+#         y='RAPL_diff',
+#         data=data,
+#         ax=ax,
+#         color=color,
+#         jitter=True,
+#         alpha=0.7
+#     )
     
-    ax.set_title(benchmark)
-    ax.set_xlabel('')
-    ax.set_ylabel('')
-    ax.set_xticks([])  # remove x ticks
+#     ax.set_title(benchmark)
+#     ax.set_xlabel('')
+#     ax.set_ylabel('')
+#     ax.set_xticks([])  # remove x ticks
 
-# Hide the 8th subplot
-axes[-1].axis('off')
+# # Hide the 8th subplot
+# axes[-1].axis('off')
 
-# Add one common y-axis label
-fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+# # Add one common y-axis label
+# fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
 
-# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+# # fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
 
-plt.tight_layout(rect=[0.05, 0, 1, 1])
+# plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=300)
-# plt.show()
+# # plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=300)
+# # plt.show()
 
-# ref user box plots with dist points
+# # ref user box plots with dist points
 
-df_filtered = df_cleaned[
-    (df_cleaned['tool'] == 'Ref_User') & 
-    (df_cleaned['benchmark'] != 'mi') 
-    ]
+# df_filtered = df_cleaned[
+#     (df_cleaned['tool'] == 'Ref_User') & 
+#     (df_cleaned['benchmark'] != 'mi') 
+#     ]
 
-fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
-axes = axes.flatten()
+# fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+# fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
+# axes = axes.flatten()
 
-# Pick 7 distinct colors
-palette = sns.color_palette("tab10")[:7]
+# # Pick 7 distinct colors
+# palette = sns.color_palette("tab10")[:7]
 
-for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
-    ax = axes[i]
-    data = df_filtered[df_filtered['benchmark'] == benchmark]
+# for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
+#     ax = axes[i]
+#     data = df_filtered[df_filtered['benchmark'] == benchmark]
     
-    sns.boxplot(
-        x=[''] * len(data),
-        y='RAPL_diff',
-        data=data,
-        ax=ax,
-        color=color,
-        fliersize=0,
-        boxprops=dict(facecolor='none', edgecolor=color),
-        whiskerprops=dict(color=color),
-        capprops=dict(color=color),
-        medianprops=dict(color=color)
-    )
+#     sns.boxplot(
+#         x=[''] * len(data),
+#         y='RAPL_diff',
+#         data=data,
+#         ax=ax,
+#         color=color,
+#         fliersize=0,
+#         boxprops=dict(facecolor='none', edgecolor=color),
+#         whiskerprops=dict(color=color),
+#         capprops=dict(color=color),
+#         medianprops=dict(color=color)
+#     )
     
-    sns.stripplot(
-        x=[''] * len(data),
-        y='RAPL_diff',
-        data=data,
-        ax=ax,
-        color=color,
-        jitter=True,
-        alpha=0.7
-    )
+#     sns.stripplot(
+#         x=[''] * len(data),
+#         y='RAPL_diff',
+#         data=data,
+#         ax=ax,
+#         color=color,
+#         jitter=True,
+#         alpha=0.7
+#     )
     
-    ax.set_title(benchmark)
-    ax.set_xlabel('')
-    ax.set_ylabel('')
-    ax.set_xticks([])  # remove x ticks
+#     ax.set_title(benchmark)
+#     ax.set_xlabel('')
+#     ax.set_ylabel('')
+#     ax.set_xticks([])  # remove x ticks
 
-# Hide the 8th subplot
-axes[-1].axis('off')
+# # Hide the 8th subplot
+# axes[-1].axis('off')
 
-# Add one common y-axis label
-fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+# # Add one common y-axis label
+# fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
 
-# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+# # fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
 
-plt.tight_layout(rect=[0.05, 0, 1, 1])
+# plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=300)
-# plt.show()
+# # plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=300)
+# # plt.show()
+
+# print("\n Cstate Stuff \n")
+
+# grouped = csdf[["tool","run_number","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool")
+
+# for tool_name, group_df in grouped:
+#     print(f"\n=== Tool: {tool_name} ===")
+#     print(group_df)
+
+
+# grouped_mean = csdf[["tool","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool").median(numeric_only=True)
+# print(grouped_mean)
+
+# csdf.to_csv("./csv/csdf.csv")
+
+print("\n Micro Bench sub raw\n")
+
+# print("Columns:", mbdf.columns.tolist())
+
+# print(mbdf[['nop', 'mov eax ebx']])
+
+mbdf_subtracted = mbdf.copy()
+
+# Columns to adjust
+cols_to_subtract = [
+    'mov eax ebx',
+    'cpuid 0x1 0',
+    'rdmsr 0x611',
+    'rdmsr 0x639',
+    'rdmsr 0x641',
+    'rdmsr 0x619',
+    'rdmsr 0x19C',
+    'rdmsr 0x17'
+]
+
+# Subtract 'nop' from each specified column
+mbdf_subtracted[cols_to_subtract] = mbdf_subtracted[cols_to_subtract].subtract(mbdf_subtracted['nop'], axis=0)
+
+print(mbdf_subtracted[['mov eax ebx', 'cpuid 0x1 0','rdmsr 0x611', 'rdmsr 0x639', 'rdmsr 0x641', 'rdmsr 0x619', 'rdmsr 0x19C', 'rdmsr 0x17', 
+                       'sys_call_overhead_proc_read','sys_call_overhead_sys_read']])
+
+with open('./tex/mbdata_sub_raw.tex', 'w') as f:
+    f.write(mbdf_subtracted[['mov eax ebx', 'cpuid 0x1 0','rdmsr 0x611', 'rdmsr 0x639', 'rdmsr 0x641', 'rdmsr 0x619', 'rdmsr 0x19C', 'rdmsr 0x17', 
+                       'sys_call_overhead_proc_read','sys_call_overhead_sys_read']].to_latex(index=True, escape=False))
+
+
+# columns_to_test = cols_to_subtract
+
+# # Store results
+# normality_results = {}
+
+# for col in columns_to_test:
+#     # Drop NaN just in case — Shapiro does not handle NaN
+#     data = mbdf_subtracted[col].dropna()
+#     stat, p_value = shapiro(data)
+#     normality_results[col] = {'W-statistic': stat, 'p-value': p_value}
+
+# # Display nicely
+# for col, result in normality_results.items():
+#     print(f"{col}: W = {result['W-statistic']:.4f}, p = {result['p-value']}")
+
+print("\n Micro Bench per call sub mean median, max, min\n")
+
+cols_to_sum = [
+    'mov eax ebx',
+    'cpuid 0x1 0',
+    'rdmsr 0x611',
+    'rdmsr 0x639',
+    'rdmsr 0x641',
+    'rdmsr 0x619',
+    'rdmsr 0x19C',
+    'rdmsr 0x17',
+    'sys_call_overhead_proc_read',
+    'sys_call_overhead_sys_read'
+]
+
+summary_stats = mbdf_subtracted[cols_to_sum].agg(['mean', 'median', 'min', 'max'])
+
+summary_stats_div = summary_stats.div(1000)
+
+pd.set_option('display.float_format', '{:.3e}'.format)
+
+print(summary_stats_div)
+
+with open('./tex/mbdata_sum_per_exec_ns.tex', 'w') as f:
+    f.write(summary_stats_div.to_latex(index=True, escape=False))
+
+cpu_freq_ghz = 3.1  # GHz of Intel NUC Kit NUC8i7HVK on powersave governer
+
+# Multiply all values by CPU frequency in GHz
+summary_stats_cycles = summary_stats_div * cpu_freq_ghz
+
+print("\n Micro Bench per cycle sub mean median, max, min\n")
+
+print(summary_stats_cycles)
+
+with open('./tex/mbdata_sum_per_exec_cycles.tex', 'w') as f:
+    f.write(summary_stats_div.to_latex(index=True, escape=False))
