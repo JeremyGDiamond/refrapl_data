@@ -268,7 +268,7 @@ def maxtix_of_boxs(df, quant, yname, outfile):
     plt.subplots_adjust(bottom=0.05)
     plt.subplots_adjust(bottom=0.05)
     
-    plt.savefig(outfile, dpi=300)
+    plt.savefig(outfile, dpi=150)
 
 
 # Make DataFrame
@@ -720,7 +720,7 @@ df_filtered = df_cleaned[
     (df_cleaned['benchmark'] != 'mi')
 ].copy()
 
-# maxtix_of_boxs(df_filtered, 'RAPL_diff', 'RAPL Energy Consumption (J)', "./plots/RAPL_Energy_Consumption_box_matrix.png")
+maxtix_of_boxs(df_filtered, 'RAPL_diff', 'RAPL Energy Consumption (J)', "./plots/RAPL_Energy_Consumption_box_matrix.png")
 
 df_filtered = df_cleaned[
     (df_cleaned['tool'] != 'No_Tools') &
@@ -728,7 +728,7 @@ df_filtered = df_cleaned[
     (df_cleaned['benchmark'] != 'mi')
 ].copy()
 
-# maxtix_of_boxs(df_filtered, 'duration_seconds', 'Time To Complete (s)', "./plots/duration_seconds_box_matrix.png")
+maxtix_of_boxs(df_filtered, 'duration_seconds', 'Time To Complete (s)', "./plots/duration_seconds_box_matrix.png")
 
 df_filtered = df_cleaned[
     (df_cleaned['tool'] != 'No_Tools') &
@@ -739,133 +739,135 @@ df_filtered = df_cleaned[
 
 # ref kern box plots with dist points
 
-# df_filtered = df_cleaned[
-#     (df_cleaned['tool'] == 'Ref_Kern') & 
-#     (df_cleaned['benchmark'] != 'mi') 
-#     ]
+df_filtered = df_cleaned[
+    (df_cleaned['tool'] == 'Ref_Kern') & 
+    (df_cleaned['benchmark'] != 'mi') 
+    ]
 
-# fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-# fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
-# axes = axes.flatten()
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_Kern', fontsize=16)
+axes = axes.flatten()
 
-# # Pick 7 distinct colors
-# palette = sns.color_palette("tab10")[:7]
+# Pick 7 distinct colors
+palette = sns.color_palette("tab10")[:7]
 
-# for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
-#     ax = axes[i]
-#     data = df_filtered[df_filtered['benchmark'] == benchmark]
+for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
+    ax = axes[i]
+    data = df_filtered[df_filtered['benchmark'] == benchmark]
     
-#     sns.boxplot(
-#         x=[''] * len(data),
-#         y='RAPL_diff',
-#         data=data,
-#         ax=ax,
-#         color=color,
-#         fliersize=0,
-#         boxprops=dict(facecolor='none', edgecolor=color),
-#         whiskerprops=dict(color=color),
-#         capprops=dict(color=color),
-#         medianprops=dict(color=color)
-#     )
+    sns.boxplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        fliersize=0,
+        boxprops=dict(facecolor='none', edgecolor=color),
+        whiskerprops=dict(color=color),
+        capprops=dict(color=color),
+        medianprops=dict(color=color)
+    )
     
-#     sns.stripplot(
-#         x=[''] * len(data),
-#         y='RAPL_diff',
-#         data=data,
-#         ax=ax,
-#         color=color,
-#         jitter=True,
-#         alpha=0.7
-#     )
+    sns.stripplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        jitter=True,
+        alpha=0.7
+    )
     
-#     ax.set_title(benchmark)
-#     ax.set_xlabel('')
-#     ax.set_ylabel('')
-#     ax.set_xticks([])  # remove x ticks
+    ax.set_title(benchmark , fontsize=20)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_xticks([])  # remove x ticks
 
-# # Hide the 8th subplot
-# axes[-1].axis('off')
+# Hide the 8th subplot
+axes[-1].axis('off')
 
-# # Add one common y-axis label
-# fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+# Add one common y-axis label
+fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=20)
 
-# # fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
 
-# plt.tight_layout(rect=[0.05, 0, 1, 1])
+plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-# # plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=300)
-# # plt.show()
+plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=150)
+plt.show()
 
-# # ref user box plots with dist points
+# ref user box plots with dist points
 
-# df_filtered = df_cleaned[
-#     (df_cleaned['tool'] == 'Ref_User') & 
-#     (df_cleaned['benchmark'] != 'mi') 
-#     ]
+df_filtered = df_cleaned[
+    (df_cleaned['tool'] == 'Ref_User') & 
+    (df_cleaned['benchmark'] != 'mi') 
+    ]
 
-# fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-# fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
-# axes = axes.flatten()
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+fig.suptitle('Energy Consumption of Benchmarks for Ref_Rapl_User', fontsize=16)
+axes = axes.flatten()
 
-# # Pick 7 distinct colors
-# palette = sns.color_palette("tab10")[:7]
+# Pick 7 distinct colors
+palette = sns.color_palette("tab10")[:7]
 
-# for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
-#     ax = axes[i]
-#     data = df_filtered[df_filtered['benchmark'] == benchmark]
+for i, (benchmark, color) in enumerate(zip(benchmarks1, palette)):
+    ax = axes[i]
+    data = df_filtered[df_filtered['benchmark'] == benchmark]
     
-#     sns.boxplot(
-#         x=[''] * len(data),
-#         y='RAPL_diff',
-#         data=data,
-#         ax=ax,
-#         color=color,
-#         fliersize=0,
-#         boxprops=dict(facecolor='none', edgecolor=color),
-#         whiskerprops=dict(color=color),
-#         capprops=dict(color=color),
-#         medianprops=dict(color=color)
-#     )
+    sns.boxplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        fliersize=0,
+        boxprops=dict(facecolor='none', edgecolor=color),
+        whiskerprops=dict(color=color),
+        capprops=dict(color=color),
+        medianprops=dict(color=color)
+    )
     
-#     sns.stripplot(
-#         x=[''] * len(data),
-#         y='RAPL_diff',
-#         data=data,
-#         ax=ax,
-#         color=color,
-#         jitter=True,
-#         alpha=0.7
-#     )
+    sns.stripplot(
+        x=[''] * len(data),
+        y='RAPL_diff',
+        data=data,
+        ax=ax,
+        color=color,
+        jitter=True,
+        alpha=0.7
+    )
     
-#     ax.set_title(benchmark)
-#     ax.set_xlabel('')
-#     ax.set_ylabel('')
-#     ax.set_xticks([])  # remove x ticks
+    ax.set_title(benchmark, fontsize=20)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_xticks([])  # remove x ticks
 
-# # Hide the 8th subplot
-# axes[-1].axis('off')
+# Hide the 8th subplot
+axes[-1].axis('off')
 
-# # Add one common y-axis label
-# fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=12)
+# Add one common y-axis label
+fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsize=20)
 
-# # fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
+# fig.text(0.5, 0.04, 'Ref_Rapl_Kernel', va='center', rotation='Horizontal', fontsize=12)
 
-# plt.tight_layout(rect=[0.05, 0, 1, 1])
+plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-# # plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=300)
-# # plt.show()
+plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=150)
+plt.show()
 
-# print("\n Cstate Stuff \n")
+print("\n Cstate Stuff \n")
 
-# grouped = csdf[["tool","run_number","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool")
+grouped = csdf[["tool","run_number","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool")
 
-# for tool_name, group_df in grouped:
-#     print(f"\n=== Tool: {tool_name} ===")
-#     print(group_df)
+for tool_name, group_df in grouped:
+    print(f"\n=== Tool: {tool_name} ===")
+    print(group_df)
 
 
-# grouped_mean = csdf[["tool","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool").median(numeric_only=True)
-# print(grouped_mean)
+grouped_mean = csdf[["tool","C0_sec","C1_sec","C3_sec","C6_sec","C8_sec","C9_sec"]].groupby("tool").median(numeric_only=True)
+
+print("\nC-State mean by tool\n")
+print(grouped_mean)
 
 # csdf.to_csv("./csv/csdf.csv")
 
@@ -951,4 +953,4 @@ print("\n Micro Bench per cycle sub mean median, max, min\n")
 print(summary_stats_cycles)
 
 with open('./tex/mbdata_sum_per_exec_cycles.tex', 'w') as f:
-    f.write(summary_stats_div.to_latex(index=True, escape=False))
+    f.write(summary_stats_cycles.to_latex(index=True, escape=False))
