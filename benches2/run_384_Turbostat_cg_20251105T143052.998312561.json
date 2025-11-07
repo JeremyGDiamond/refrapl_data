@@ -1,0 +1,49 @@
+[
+{
+  "id": 0,
+  "source": "WS_in",
+  "output": true,
+  "apower": 26.4,
+  "voltage": 238.4,
+  "current": 0.156,
+  "aenergy": {
+    "total": 1171.039,
+    "by_minute": [
+      710.310,
+      1373.917,
+      1373.917
+    ],
+    "minute_ts": 1762349452
+  },
+  "temperature": {
+    "tC": 40.6,
+    "tF": 105.0
+  },
+  "timestamp": "20251105T143053.084869131",
+  "RAPL": "215098.906193"
+}
+,
+{
+  "id": 0,
+  "source": "WS_in",
+  "output": true,
+  "apower": 90.1,
+  "voltage": 237.8,
+  "current": 0.428,
+  "aenergy": {
+    "total": 1172.151,
+    "by_minute": [
+      992.227,
+      829.615,
+      1373.917
+    ],
+    "minute_ts": 1762349499
+  },
+  "temperature": {
+    "tC": 40.6,
+    "tF": 105.1
+  },
+  "timestamp": "20251105T143140.569510925",
+  "RAPL": "217439.736809"
+}
+]

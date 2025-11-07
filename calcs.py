@@ -268,7 +268,7 @@ def maxtix_of_boxs(df, quant, yname, outfile):
     plt.subplots_adjust(bottom=0.05)
     plt.subplots_adjust(bottom=0.05)
     
-    plt.savefig(outfile, dpi=150)
+    plt.savefig(outfile, dpi=300)
 
 
 # Make DataFrame
@@ -793,7 +793,7 @@ fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsiz
 
 plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=150)
+plt.savefig("./plots/ref_kern_benchmarks_boxplots.png", dpi=300)
 plt.show()
 
 # ref user box plots with dist points
@@ -852,7 +852,7 @@ fig.text(0.04, 0.5, 'Energy (Joules)', va='center', rotation='vertical', fontsiz
 
 plt.tight_layout(rect=[0.05, 0, 1, 1])
 
-plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=150)
+plt.savefig("./plots/ref_user_benchmarks_boxplots.png", dpi=300)
 plt.show()
 
 print("\n Cstate Stuff \n")
