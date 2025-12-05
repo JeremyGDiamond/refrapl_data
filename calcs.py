@@ -22,10 +22,10 @@ benchmarks1 = ["bt", "cg", "ft", "mg", "ep", "is", "sl"]
 
 
 # Directory path
-bdirectory = "./benches"
-sdirectory = "./sleep/data"
-mbdirectory = "./sleep/data/microbench"
-csdirectory = "./sleep/data/cstate"
+bdirectory = "./benches2"
+# sdirectory = "./sleep/data"
+mbdirectory = "./benches2/microbench"
+csdirectory = "./benches2/cstate"
 
 # Regex pattern to extract run_number, tool, benchmark
 pattern = re.compile(r"run_(\d+)_([A-Za-z_]+)_([a-z]+)_([\dT\.]+)\.json")
@@ -272,10 +272,10 @@ def maxtix_of_boxs(df, quant, yname, outfile):
 
 
 # Make DataFrame
-df1 = readFiles(bdirectory)
-df2 = readFiles(sdirectory)
+df_benches = readFiles(bdirectory)
+# df2 = readFiles(sdirectory)
 
-df_benches = pd.concat([df1, df2], ignore_index=True)
+# df_benches = pd.concat([df1, df2], ignore_index=True)
 
 # print("Shape:", df.shape)
 print("Columns:", df_benches.columns.tolist())
@@ -286,18 +286,18 @@ print("Columns:", df_benches.columns.tolist())
 
 # print(pivot)
 
-runtable = df1[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
-
-runtable.to_csv("./csv/runtable_bench.csv", index=False)
-with open('./tex/runtable_bench.tex', 'w') as f:
-    f.write(runtable.to_latex(index=True, escape=False))
-
-runtable = df2[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
-
-runtable.to_csv("./csv/runtable_sleep_micro.csv", index=False)
-with open('./tex/runtable_sleep_micro.tex', 'w') as f:
-    f.write(runtable.to_latex(index=True, escape=False))
-
+# runtable = df1[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
+#
+# runtable.to_csv("./csv/runtable_bench.csv", index=False)
+# with open('./tex/runtable_bench.tex', 'w') as f:
+#     f.write(runtable.to_latex(index=True, escape=False))
+#
+# runtable = df2[["run_number", "tool", "benchmark"]].sort_values(by="run_number")
+#
+# runtable.to_csv("./csv/runtable_sleep_micro.csv", index=False)
+# with open('./tex/runtable_sleep_micro.tex', 'w') as f:
+#     f.write(runtable.to_latex(index=True, escape=False))
+#
 ## import micro-bench data
 mbdf = read_microbench(mbdirectory)
 

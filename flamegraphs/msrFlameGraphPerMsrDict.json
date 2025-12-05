@@ -1,0 +1,30 @@
+[
+  {
+    "cpu_num": "0",
+    "register_num": 611,
+    "access_count": "493186",
+    "micro_total": 13886903,
+  }
+,
+  {
+    "cpu_num": "0",
+    "register_num": 639,
+    "access_count": "493186",
+    "micro_total": 12846208,
+  }
+,
+  {
+    "cpu_num": "0",
+    "register_num": 641,
+    "access_count": "493186",
+    "micro_total": 9321347,
+  }
+,
+  {
+    "cpu_num": "0",
+    "register_num": 619,
+    "access_count": "493186",
+    "micro_total": 5403618,
+  }
+
+]
