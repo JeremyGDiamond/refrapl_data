@@ -423,7 +423,7 @@
 ]]>
 </script>
 <rect x="0.0" y="0" width="1200.0" height="454.0" fill="url(#background)"  />
-<text id="title" x="600.00" y="24" >Flame Graph</text>
+<text id="title" x="600.00" y="24" >Ref RAPL User</text>
 <text id="details" x="10.00" y="437" > </text>
 <text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
 <text id="search" x="1090.00" y="24" >Search</text>
@@ -1067,7 +1067,7 @@
 <text  x="338.17" y="255.5" ></text>
 </g>
 <g >
-<title>native_read_msr_safe (939,388,513 samples, 3.72%)</title><rect x="391.9" y="213" width="43.8" height="15.0" fill="rgb(217,55,13)" rx="2" ry="2" />
+<title>native_read_msr_safe (939,388,513 samples, 3.72%)</title><rect x="391.9" y="213" width="43.8" height="15.0" fill="rgb(139, 255, 0)" rx="2" ry="2" />
 <text  x="394.88" y="223.5" >nati..</text>
 </g>
 <g >
@@ -1495,7 +1495,7 @@
 <text  x="701.24" y="319.5" ></text>
 </g>
 <g >
-<title>__GI___libc_write (304,361,851 samples, 1.20%)</title><rect x="10.8" y="373" width="14.2" height="15.0" fill="rgb(217,57,13)" rx="2" ry="2" />
+<title>__GI___libc_write (304,361,851 samples, 1.20%)</title><rect x="10.8" y="373" width="14.2" height="15.0" fill="rgb(0, 137, 255)" rx="2" ry="2" />
 <text  x="13.83" y="383.5" ></text>
 </g>
 <g >
@@ -1755,8 +1755,8 @@
 <text  x="374.22" y="271.5" ></text>
 </g>
 <g >
-<title>__libc_pread (17,598,815,148 samples, 69.60%)</title><rect x="25.0" y="373" width="821.3" height="15.0" fill="rgb(238,156,37)" rx="2" ry="2" />
-<text  x="28.03" y="383.5" >__libc_pread</text>
+<title>READ (17,598,815,148 samples, 69.60%)</title><rect x="25.0" y="373" width="821.3" height="15.0" fill="rgb(0, 255, 215)" rx="2" ry="2" />
+<text  x="28.03" y="383.5" >READ</text>
 </g>
 <g >
 <title>crypto_shash_update (7,897,895 samples, 0.03%)</title><rect x="13.7" y="133" width="0.3" height="15.0" fill="rgb(228,110,26)" rx="2" ry="2" />
@@ -1791,8 +1791,8 @@
 <text  x="48.43" y="239.5" ></text>
 </g>
 <g >
-<title>clock_nanosleep@GLIBC_2.2.5 (6,157,160,359 samples, 24.35%)</title><rect x="862.0" y="373" width="287.3" height="15.0" fill="rgb(240,165,39)" rx="2" ry="2" />
-<text  x="864.96" y="383.5" >clock_nanosleep@GLIBC_2.2.5</text>
+<title>clock_nanosleep@GLIBC_2.2.5 (6,157,160,359 samples, 24.35%)</title><rect x="862.0" y="373" width="287.3" height="15.0" fill="rgb(1,158,80)" rx="2" ry="2" />
+<text  x="864.96" y="383.5" >SLEEP</text>
 </g>
 <g >
 <title>update_rq_clock (97,151,692 samples, 0.38%)</title><rect x="653.2" y="197" width="4.5" height="15.0" fill="rgb(231,119,28)" rx="2" ry="2" />

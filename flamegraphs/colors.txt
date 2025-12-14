@@ -1,0 +1,14 @@
+native_rdmsr = rgb(139, 255, 0) lime green
+
+open = rgb(236, 0, 255) electric purple
+
+close = rgb(245, 127, 255) heliotrope
+
+read = rgb(0, 255, 215) bright turquoise
+
+write = rgb(0, 137, 255) Azure Radiance
+
+sleep = rgb(1, 158, 80) Jade
+
+math and other = default
+
